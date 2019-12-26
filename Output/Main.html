@@ -1,0 +1,371 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Project 2: Linear Finite Element Methods (Frank Lin, SID=69645187)</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-10-31"><meta name="DC.source" content="Main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Project 2: Linear Finite Element Methods (Frank Lin, SID=69645187)</h1><!--introduction--><p>The purpose of this project is to write a finite element code for solving the Poisson equation in a general polygonal domain using piecewise linear finite elements. <b>All the functions/scripts are in the file 226Project2.</b></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Step 1: Download and Install iFEM</a></li><li><a href="#2">Step 2: Mesh</a></li><li><a href="#5">Step 3: Assembling</a></li><li><a href="#7">Step 4: Right hand side</a></li><li><a href="#8">Step 5: Boundary conditions</a></li><li><a href="#11">Step 6: Convergence</a></li><li><a href="#15">Step6 and a half: Neumann Boundary on Square</a></li><li><a href="#18">Step7: Neumann Boundary (See more detail in the scripts Step7.m)</a></li></ul></div><h2 id="1">Step 1: Download and Install iFEM</h2><div><ul><li>Download <a href="https://bitbucket.org/ifem/ifem/get/tip.zip">iFEM</a></li><li>Unzip the file to where you like</li><li>In MATLAB, go to the iFEM folder</li><li>Run <tt>setpath.m</tt></li></ul></div><h2 id="2">Step 2: Mesh</h2><div><ul><li>Generate mesh for square and disk domains</li></ul></div><pre class="codeinput">[node,elem] = squaremesh([0,1,0,1],0.25);
+showmesh(node,elem);
+</pre><img vspace="5" hspace="5" src="Main_01.png" style="width:560px;height:420px;" alt=""> <pre class="codeinput">[node,elem] = circlemesh(0,0,1,0.2);
+showmesh(node,elem);
+</pre><pre class="codeoutput"> - Min quality 0.7571 - Mean quality 0.9696 - Uniformity 4.34% 
+</pre><img vspace="5" hspace="5" src="Main_02.png" style="width:560px;height:420px;" alt=""> <div><ul><li>Uniform refine to get a finer mesh</li></ul></div><pre class="codeinput">[node,elem] = uniformrefine(node,elem);
+showmesh(node,elem);
+</pre><img vspace="5" hspace="5" src="Main_03.png" style="width:560px;height:420px;" alt=""> <h2 id="5">Step 3: Assembling</h2><p>Compare three ways of assembling stiffness matrix discussed in <a href="http://math.uci.edu/~chenlong/226/Ch3FEMCode.pdf">Programming of FEM</a>.</p><pre class="codeinput">[node,elem] = circlemesh(0,0,1,0.2);
+<span class="keyword">for</span> Refine=0:1
+profile <span class="string">on</span>
+fprintf(<span class="string">'number of refine=%i\n'</span>, Refine);
+fprintf(<span class="string">'assemblingstandard\n'</span>);
+tic; assemblingstandard(node,elem); toc; <span class="comment">%Slowest</span>
+fprintf(<span class="string">'assemblingsparse\n'</span>);
+tic; assemblingsparse(node,elem); toc;
+fprintf(<span class="string">'assembling\n'</span>);
+tic; assembling(node,elem); toc; <span class="comment">%Fastest</span>
+fprintf(<span class="string">'\n'</span>);
+profile <span class="string">viewer</span>
+[node,elem] = uniformrefine(node,elem);
+<span class="keyword">end</span>
+</pre><pre class="codeoutput"> - Min quality 0.7570 - Mean quality 0.9696 - Uniformity 4.34% 
+number of refine=0
+assemblingstandard
+Elapsed time is 0.031817 seconds.
+assemblingsparse
+Elapsed time is 0.018783 seconds.
+assembling
+Elapsed time is 0.007865 seconds.
+
+number of refine=1
+assemblingstandard
+Elapsed time is 0.167445 seconds.
+assemblingsparse
+Elapsed time is 0.122088 seconds.
+assembling
+Elapsed time is 0.012050 seconds.
+
+</pre><p>Compare the computational time for different N (by uniform refinement of the initial mesh).</p><h2 id="7">Step 4: Right hand side</h2><p>Using three points quadrature (i.e. 3 middle points of a triangle) to compute the right hand side vector. <b>Please see the function RightHandSide.m</b></p><h2 id="8">Step 5: Boundary conditions</h2><div><ul><li>Use <tt>findboundary.m</tt> to get all boundary nodes and edges</li><li>Code pure Dirichlet boundary condition (See Below and Dirichlet_bd.m)</li><li>Code pure Neumann boundary condition (See Below)</li></ul></div><p>Dirichlet boundary condition</p><pre class="codeinput">A=assembling(node,elem);
+N = size(node,1);
+b=RightHandSide(node,elem);
+[bdNode,bdEdge,isBdNode,isBdElem] = findboundary(elem);
+u = zeros(N,1);
+u(bdNode) = g_d_function(node(bdNode,:));
+b = b-A*u;
+</pre><p>Neumann boundary condition</p><pre class="codeinput">Nve = node(bdEdge(:,1),:) - node(bdEdge(:,2),:);
+edgeLength = sqrt(sum(Nve.^2,2));
+mid = (node(bdEdge(:,1),:) + node(bdEdge(:,2),:))/2;
+b = b + accumarray([bdEdge(:),ones(2*size(bdEdge,1),1)],repmat(edgeLength.*g_N(mid)/2,2,1),[N,1]);
+</pre><h2 id="11">Step 6: Convergence</h2><pre class="codeinput">clear
+<span class="comment">%</span>
+<span class="comment">% * Choose a smooth solution, say $u = \sin(2\pi x)\cos(2\pi y)$, calculate the</span>
+<span class="comment">% right hand side f and boundary conditions for the unit square.</span>
+[node,elem] = squaremesh([0,1,0,1],0.2);
+<span class="comment">% * Use your subroutine to get an approximation and use |showresult| to plot</span>
+<span class="comment">% the mesh and the solution.</span>
+<span class="keyword">for</span> k=1:4
+    exactu = inline(<span class="string">'sin(2*pi*pxy(:,1)).*cos(2*pi*pxy(:,2))'</span>,<span class="string">'pxy'</span>);
+    Du = inline(<span class="string">'[2*pi*cos(2*pi*pxy(:,1)).*cos(2*pi*pxy(:,2)) -2*pi*sin(2*pi*pxy(:,1)).*sin(2*pi*pxy(:,2))]'</span>,<span class="string">'pxy'</span>);
+    <span class="comment">%uI = exactu(node);</span>
+    N(k) = size(node,1);
+    b=RightHandSide(node,elem);
+    A=assembling(node,elem);
+    [bdNode,bdEdge,isBdNode,isBdElem] = findboundary(elem);
+
+
+    u_h=Dirichlet_bd(node,elem);
+
+    <span class="comment">%u_I = u_exact(node);</span>
+    <span class="comment">%errL2 = getL2error(node,elem,u_exact,u_numerical);</span>
+
+         error_L2(k) = getL2error(node,elem,exactu,u_h);
+         error_H1(k) = getH1error(node,elem,Du,u_h);
+         [node,elem] = uniformrefine(node,elem);
+<span class="keyword">end</span>
+
+     showrate(N,error_L2);
+</pre><img vspace="5" hspace="5" src="Main_04.png" style="width:560px;height:420px;" alt=""> <pre class="codeinput">     showrate(N,error_H1);
+</pre><img vspace="5" hspace="5" src="Main_05.png" style="width:560px;height:420px;" alt=""> <pre class="codeinput">     [node,elem] = squaremesh([0,1,0,1],0.1);
+     u_h=Dirichlet_bd(node,elem);
+     showresult(node,elem,u_h); <span class="comment">%Show numerical result</span>
+</pre><img vspace="5" hspace="5" src="Main_06.png" style="width:768px;height:200px;" alt=""> <pre class="codeinput">     [node,elem] = squaremesh([0,1,0,1],0.1);
+     u_h=u_function(node);
+     showresult(node,elem,u_h); <span class="comment">%Show exact(interpolation) result</span>
+</pre><img vspace="5" hspace="5" src="Main_07.png" style="width:768px;height:200px;" alt=""> <h2 id="15">Step6 and a half: Neumann Boundary on Square</h2><pre class="codeinput"> clear;
+ exactu = inline(<span class="string">'cos(2*pi*pxy(:,1)).*cos(2*pi*pxy(:,2))'</span>,<span class="string">'pxy'</span>);
+ Du = inline(<span class="string">'[-2*pi*sin(2*pi*pxy(:,1)).*cos(2*pi*pxy(:,2)) -2*pi*cos(2*pi*pxy(:,1)).*sin(2*pi*pxy(:,2))]'</span>,<span class="string">'pxy'</span>);
+ [node,elem] = squaremesh([0,1,0,1],0.25);
+ <span class="keyword">for</span> k=1:4
+ A= assembling(node,elem);
+ N(k) = size(node,1);
+ mid1 = (node(elem(:,2),:)+node(elem(:,3),:))/2;
+ mid2 = (node(elem(:,3),:)+node(elem(:,1),:))/2;
+ mid3 = (node(elem(:,1),:)+node(elem(:,2),:))/2;
+
+ e1 = (node(elem(:,2),:)-node(elem(:,1),:));
+ e1 = [e1 zeros(size(e1,1),1)];
+ e2 = (node(elem(:,3),:)-node(elem(:,1),:));
+ e2 = [e2 zeros(size(e2,1),1)];
+ area = abs((cross(e1,e2)))*1/2;
+ area=area(:,3);
+
+ bt1 = area.*(rhsfunction2sq(mid2)+rhsfunction2sq(mid3))/6;
+ bt2 = area.*(rhsfunction2sq(mid3)+rhsfunction2sq(mid1))/6;
+ bt3 = area.*(rhsfunction2sq(mid1)+rhsfunction2sq(mid2))/6;
+
+ b = accumarray(elem(:),[bt1;bt2;bt3],[N(k) 1]);
+
+ [bdNode,bdEdge,isBdNode,isBdElem] = findboundary(elem);
+ Nve = node(bdEdge(:,1),:) - node(bdEdge(:,2),:);
+ edgeLength = sqrt(sum(Nve.^2,2));
+ mid = (node(bdEdge(:,1),:) + node(bdEdge(:,2),:))/2;
+ b = b + accumarray([bdEdge(:),ones(2*size(bdEdge,1),1)],repmat(edgeLength.*g_Nsquare(mid)/2,2,1),[N(k),1]);
+ b = b - mean(b);
+ u_h=A\b;
+ u_h=u_h-mean(u_h);
+ error_L2(k) = getL2error(node,elem,exactu,u_h);
+ error_H1(k) = getH1error(node,elem,Du,u_h);
+
+ [node,elem] = uniformrefine(node,elem);
+ <span class="keyword">end</span>
+ showresult(node,elem,u_h-mean(u_h));
+</pre><pre class="codeoutput">Warning: Matrix is close to singular or badly scaled. Results may be inaccurate.
+RCOND =  9.350037e-20. 
+</pre><img vspace="5" hspace="5" src="Main_08.png" style="width:768px;height:200px;" alt=""> <pre class="codeinput"> showrate(N,error_L2);
+</pre><img vspace="5" hspace="5" src="Main_09.png" style="width:768px;height:200px;" alt=""> <pre class="codeinput"> showrate(N,error_H1);
+</pre><img vspace="5" hspace="5" src="Main_10.png" style="width:768px;height:200px;" alt=""> <h2 id="18">Step7: Neumann Boundary (See more detail in the scripts Step7.m)</h2><pre class="codeinput"> clear;
+
+ <span class="comment">%Publish/Run the script Step7.m, the constants are adjusted such that the</span>
+ <span class="comment">%exact solution is f(x,y)=x^2+y^2-1/2.</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Project 2: Linear Finite Element Methods (Frank Lin, SID=69645187)
+%
+% The purpose of this project is to write a finite element code for
+% solving the Poisson equation in a general polygonal domain using
+% piecewise linear finite elements. 
+% *All the functions/scripts are in the file 226Project2.*
+
+%% Step 1: Download and Install iFEM
+%
+% * Download <https://bitbucket.org/ifem/ifem/get/tip.zip iFEM>
+% * Unzip the file to where you like
+% * In MATLAB, go to the iFEM folder  
+% * Run |setpath.m|
+
+%% Step 2: Mesh
+%
+% * Generate mesh for square and disk domains
+[node,elem] = squaremesh([0,1,0,1],0.25);
+showmesh(node,elem);
+%%
+[node,elem] = circlemesh(0,0,1,0.2);
+showmesh(node,elem);
+%%
+% * Uniform refine to get a finer mesh
+[node,elem] = uniformrefine(node,elem);
+showmesh(node,elem);
+
+%% Step 3: Assembling 
+%
+% Compare three ways of assembling stiffness matrix discussed in <http://math.uci.edu/~chenlong/226/Ch3FEMCode.pdf Programming of FEM>.
+% 
+[node,elem] = circlemesh(0,0,1,0.2);
+for Refine=0:1
+profile on
+fprintf('number of refine=%i\n', Refine);
+fprintf('assemblingstandard\n');
+tic; assemblingstandard(node,elem); toc; %Slowest
+fprintf('assemblingsparse\n');
+tic; assemblingsparse(node,elem); toc;
+fprintf('assembling\n');
+tic; assembling(node,elem); toc; %Fastest
+fprintf('\n');
+profile viewer
+[node,elem] = uniformrefine(node,elem);
+end
+%%
+% Compare the computational time for different N (by uniform refinement of
+% the initial mesh).
+
+%% Step 4: Right hand side
+%
+% Using three points quadrature (i.e. 3 middle points of a triangle) to
+% compute the right hand side vector.
+% *Please see the function RightHandSide.m*
+
+%% Step 5: Boundary conditions
+%
+% * Use |findboundary.m| to get all boundary nodes and edges
+% * Code pure Dirichlet boundary condition (See Below and Dirichlet_bd.m)
+% * Code pure Neumann boundary condition (See Below)
+%%
+% Dirichlet boundary condition
+A=assembling(node,elem);
+N = size(node,1);
+b=RightHandSide(node,elem);
+[bdNode,bdEdge,isBdNode,isBdElem] = findboundary(elem);
+u = zeros(N,1);
+u(bdNode) = g_d_function(node(bdNode,:));
+b = b-A*u;
+%%
+% Neumann boundary condition
+Nve = node(bdEdge(:,1),:) - node(bdEdge(:,2),:);
+edgeLength = sqrt(sum(Nve.^2,2));
+mid = (node(bdEdge(:,1),:) + node(bdEdge(:,2),:))/2;
+b = b + accumarray([bdEdge(:),ones(2*size(bdEdge,1),1)],repmat(edgeLength.*g_N(mid)/2,2,1),[N,1]);
+
+%% Step 6: Convergence
+clear
+%
+% * Choose a smooth solution, say $u = \sin(2\pi x)\cos(2\pi y)$, calculate the
+% right hand side f and boundary conditions for the unit square.
+[node,elem] = squaremesh([0,1,0,1],0.2);
+% * Use your subroutine to get an approximation and use |showresult| to plot
+% the mesh and the solution.
+for k=1:4
+    exactu = inline('sin(2*pi*pxy(:,1)).*cos(2*pi*pxy(:,2))','pxy');
+    Du = inline('[2*pi*cos(2*pi*pxy(:,1)).*cos(2*pi*pxy(:,2)) -2*pi*sin(2*pi*pxy(:,1)).*sin(2*pi*pxy(:,2))]','pxy');
+    %uI = exactu(node);
+    N(k) = size(node,1);
+    b=RightHandSide(node,elem);
+    A=assembling(node,elem);
+    [bdNode,bdEdge,isBdNode,isBdElem] = findboundary(elem);
+    
+
+    u_h=Dirichlet_bd(node,elem);
+
+    %u_I = u_exact(node);
+    %errL2 = getL2error(node,elem,u_exact,u_numerical);
+     
+         error_L2(k) = getL2error(node,elem,exactu,u_h);
+         error_H1(k) = getH1error(node,elem,Du,u_h);
+         [node,elem] = uniformrefine(node,elem);
+end
+    
+     showrate(N,error_L2);
+ %%    
+     showrate(N,error_H1);
+ %%
+     [node,elem] = squaremesh([0,1,0,1],0.1);
+     u_h=Dirichlet_bd(node,elem);
+     showresult(node,elem,u_h); %Show numerical result
+     
+ %%
+     [node,elem] = squaremesh([0,1,0,1],0.1);
+     u_h=u_function(node);
+     showresult(node,elem,u_h); %Show exact(interpolation) result
+     
+ 
+ %% Step6 and a half: Neumann Boundary on Square
+ clear;
+ exactu = inline('cos(2*pi*pxy(:,1)).*cos(2*pi*pxy(:,2))','pxy');
+ Du = inline('[-2*pi*sin(2*pi*pxy(:,1)).*cos(2*pi*pxy(:,2)) -2*pi*cos(2*pi*pxy(:,1)).*sin(2*pi*pxy(:,2))]','pxy');
+ [node,elem] = squaremesh([0,1,0,1],0.25);
+ for k=1:4
+ A= assembling(node,elem);
+ N(k) = size(node,1);
+ mid1 = (node(elem(:,2),:)+node(elem(:,3),:))/2;
+ mid2 = (node(elem(:,3),:)+node(elem(:,1),:))/2;
+ mid3 = (node(elem(:,1),:)+node(elem(:,2),:))/2;
+ 
+ e1 = (node(elem(:,2),:)-node(elem(:,1),:));
+ e1 = [e1 zeros(size(e1,1),1)];
+ e2 = (node(elem(:,3),:)-node(elem(:,1),:));
+ e2 = [e2 zeros(size(e2,1),1)];
+ area = abs((cross(e1,e2)))*1/2;
+ area=area(:,3);
+ 
+ bt1 = area.*(rhsfunction2sq(mid2)+rhsfunction2sq(mid3))/6;
+ bt2 = area.*(rhsfunction2sq(mid3)+rhsfunction2sq(mid1))/6;
+ bt3 = area.*(rhsfunction2sq(mid1)+rhsfunction2sq(mid2))/6;
+ 
+ b = accumarray(elem(:),[bt1;bt2;bt3],[N(k) 1]);
+ 
+ [bdNode,bdEdge,isBdNode,isBdElem] = findboundary(elem);
+ Nve = node(bdEdge(:,1),:) - node(bdEdge(:,2),:);
+ edgeLength = sqrt(sum(Nve.^2,2));
+ mid = (node(bdEdge(:,1),:) + node(bdEdge(:,2),:))/2;
+ b = b + accumarray([bdEdge(:),ones(2*size(bdEdge,1),1)],repmat(edgeLength.*g_Nsquare(mid)/2,2,1),[N(k),1]);
+ b = b - mean(b);
+ u_h=A\b;
+ u_h=u_h-mean(u_h);
+ error_L2(k) = getL2error(node,elem,exactu,u_h);
+ error_H1(k) = getH1error(node,elem,Du,u_h);
+ 
+ [node,elem] = uniformrefine(node,elem);
+ end
+ showresult(node,elem,u_h-mean(u_h));
+ %%
+ showrate(N,error_L2);
+ %%
+ showrate(N,error_H1);
+ 
+ %% Step7: Neumann Boundary (See more detail in the scripts Step7.m)
+ clear;
+ 
+ %Publish/Run the script Step7.m, the constants are adjusted such that the
+ %exact solution is f(x,y)=x^2+y^2-1/2.
+ 
+
+##### SOURCE END #####
+--></body></html>

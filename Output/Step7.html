@@ -1,0 +1,174 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Step7</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-10-31"><meta name="DC.source" content="Step7.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"> clear;
+ exactu = inline(<span class="string">'pxy(:,1).^2+pxy(:,2).^2-0.5'</span>,<span class="string">'pxy'</span>);
+ Du = inline(<span class="string">'[2*pxy(:,1) 2*pxy(:,2)]'</span>,<span class="string">'pxy'</span>);
+
+ <span class="keyword">for</span> k=1:4
+ [node,elem] = circlemesh(0,0,1,0.4/2^k);
+ A= assembling(node,elem);
+ N(k) = size(node,1);
+ mid1 = (node(elem(:,2),:)+node(elem(:,3),:))/2;
+ mid2 = (node(elem(:,3),:)+node(elem(:,1),:))/2;
+ mid3 = (node(elem(:,1),:)+node(elem(:,2),:))/2;
+
+ e1 = (node(elem(:,2),:)-node(elem(:,1),:));
+ e1 = [e1 zeros(size(e1,1),1)];
+ e2 = (node(elem(:,3),:)-node(elem(:,1),:));
+ e2 = [e2 zeros(size(e2,1),1)];
+ area = abs((cross(e1,e2)))*1/2;
+ area=area(:,3);
+
+
+
+ bt1 = area.*(rhsfunction2(mid2)+rhsfunction2(mid3))/6;
+ bt2 = area.*(rhsfunction2(mid3)+rhsfunction2(mid1))/6;
+ bt3 = area.*(rhsfunction2(mid1)+rhsfunction2(mid2))/6;
+
+ b = accumarray(elem(:),[bt1;bt2;bt3],[N(k) 1]);
+
+ [bdNode,bdEdge,isBdNode,isBdElem] = findboundary(elem);
+ [bdNode,bdEdge,isBdNode,isBdElem] = findboundary(elem);
+ Nve = node(bdEdge(:,1),:) - node(bdEdge(:,2),:);
+ edgeLength = sqrt(sum(Nve.^2,2));
+ mid = (node(bdEdge(:,1),:) + node(bdEdge(:,2),:))/2;
+ b = b + accumarray([bdEdge(:),ones(2*size(bdEdge,1),1)],repmat(edgeLength.*g_N(mid)/2,2,1),[N(k),1]);
+ b = b - mean(b);
+ u_h=A\b;
+ u_h=u_h-mean(u_h);
+ error_L2(k) = getL2error(node,elem,exactu,u_h);
+ error_H1(k) = getH1error(node,elem,Du,u_h);
+
+ <span class="keyword">end</span>
+</pre><pre class="codeoutput"> - Min quality 0.7571 - Mean quality 0.9696 - Uniformity 4.34% 
+Warning: Matrix is close to singular or badly scaled. Results may be inaccurate.
+RCOND =  6.359526e-19. 
+ - Min quality 0.7546 - Mean quality 0.9883 - Uniformity 2.90% 
+Warning: Matrix is close to singular or badly scaled. Results may be inaccurate.
+RCOND =  5.392487e-20. 
+ - Min quality 0.7433 - Mean quality 0.9917 - Uniformity 2.80% 
+Warning: Matrix is close to singular or badly scaled. Results may be inaccurate.
+RCOND =  8.248781e-20. 
+ - Min quality 0.6720 - Mean quality 0.9932 - Uniformity 2.67% 
+Warning: Matrix is close to singular or badly scaled. Results may be inaccurate.
+RCOND =  3.532832e-21. 
+</pre><pre class="codeinput"> showrate(N,error_L2);
+</pre><img vspace="5" hspace="5" src="Step7_01.png" style="width:560px;height:420px;" alt=""> <pre class="codeinput"> showrate(N,error_H1);
+</pre><img vspace="5" hspace="5" src="Step7_02.png" style="width:560px;height:420px;" alt=""> <pre class="codeinput">  showresult(node,elem,u_h-mean(u_h));
+</pre><img vspace="5" hspace="5" src="Step7_03.png" style="width:768px;height:200px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+ clear;
+ exactu = inline('pxy(:,1).^2+pxy(:,2).^2-0.5','pxy');
+ Du = inline('[2*pxy(:,1) 2*pxy(:,2)]','pxy');
+ 
+ for k=1:4
+ [node,elem] = circlemesh(0,0,1,0.4/2^k);
+ A= assembling(node,elem);
+ N(k) = size(node,1);
+ mid1 = (node(elem(:,2),:)+node(elem(:,3),:))/2;
+ mid2 = (node(elem(:,3),:)+node(elem(:,1),:))/2;
+ mid3 = (node(elem(:,1),:)+node(elem(:,2),:))/2;
+ 
+ e1 = (node(elem(:,2),:)-node(elem(:,1),:));
+ e1 = [e1 zeros(size(e1,1),1)];
+ e2 = (node(elem(:,3),:)-node(elem(:,1),:));
+ e2 = [e2 zeros(size(e2,1),1)];
+ area = abs((cross(e1,e2)))*1/2;
+ area=area(:,3);
+
+ 
+ 
+ bt1 = area.*(rhsfunction2(mid2)+rhsfunction2(mid3))/6;
+ bt2 = area.*(rhsfunction2(mid3)+rhsfunction2(mid1))/6;
+ bt3 = area.*(rhsfunction2(mid1)+rhsfunction2(mid2))/6;
+ 
+ b = accumarray(elem(:),[bt1;bt2;bt3],[N(k) 1]);
+ 
+ [bdNode,bdEdge,isBdNode,isBdElem] = findboundary(elem);
+ [bdNode,bdEdge,isBdNode,isBdElem] = findboundary(elem);
+ Nve = node(bdEdge(:,1),:) - node(bdEdge(:,2),:);
+ edgeLength = sqrt(sum(Nve.^2,2));
+ mid = (node(bdEdge(:,1),:) + node(bdEdge(:,2),:))/2;
+ b = b + accumarray([bdEdge(:),ones(2*size(bdEdge,1),1)],repmat(edgeLength.*g_N(mid)/2,2,1),[N(k),1]);
+ b = b - mean(b);
+ u_h=A\b;
+ u_h=u_h-mean(u_h);
+ error_L2(k) = getL2error(node,elem,exactu,u_h);
+ error_H1(k) = getH1error(node,elem,Du,u_h);
+
+ end
+ %%
+ showrate(N,error_L2);
+ %%
+ showrate(N,error_H1);
+ %%
+  showresult(node,elem,u_h-mean(u_h));
+
+##### SOURCE END #####
+--></body></html>
